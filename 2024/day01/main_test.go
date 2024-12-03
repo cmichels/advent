@@ -58,7 +58,27 @@ func Test_runStepTwo(t *testing.T){
   total, err := StepTwo(list1, list2)
 
   if err != nil {
-    println("2: error2: ", err.Error())
+    println("error2: ", err.Error())
+    return
+  }
+
+
+  println("2 totals: ", total)
+
+}
+func Test_runBetterStepTwo(t *testing.T){
+  list1, list2, err := parseData()
+
+  if err != nil {
+    println("2: error1: ", err.Error())
+    return
+  }
+
+
+  total, err := BetterStepTwo(list1, list2)
+
+  if err != nil {
+    println("error2: ", err.Error())
     return
   }
 

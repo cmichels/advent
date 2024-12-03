@@ -22,7 +22,23 @@ func StepOne(list1 []int, list2 []int) (int, error)  {
   return int(total) , nil
 }
 
+func BetterStepTwo(list1 []int, list2 []int) (int, error)  {
+  // create a frequency map of input 2
+  countMap := make(map[int]int)
 
+  for _, v := range list2{
+    countMap[v]++
+  }
+
+  var total int
+  for _, v := range list1{
+    total += v * countMap[v]
+  }
+
+
+  return total, nil
+
+}
 func StepTwo(list1 []int, list2 []int) (int, error)  {
 
   slices.Sort(list1)
