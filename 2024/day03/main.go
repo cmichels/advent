@@ -57,17 +57,20 @@ func filterMultipliers(multipliers []string) []string{
 
   for _, m := range multipliers{
 
-    logrus.Debugf("enabled: [%t], m:[%s]", enabled, m)
     if m == "don't()"{
       enabled = false
+      logrus.Debug("disabled")
       continue
     }
     if m == "do()"{
+      logrus.Debug("enabled")
       enabled = true
       continue
     }
 
+
     if enabled{
+      logrus.Debugf("m:[%s], calc: [%d]", m, parseMultipliers(m))
       result = append(result, m)
     }
   }
