@@ -13,17 +13,20 @@ const doPattern = `(mul\(\d{1,3},\d{1,3}\)|don't\(\)|do\(\))`
 func stepTwo(data []string) int {
 	var total int
 
-	for _, line := range data {
-    logrus.Debugf("line: [%s]", line)
-		matches := matchMultipliers(line, doPattern)
+	var matches []string
 
-    logrus.Tracef("matches: [%s]", matches)
-    filtered := filterMultipliers(matches)
-    logrus.Tracef("filtered: [%s]", filtered)
-		for _, val := range filtered {
-			val := parseMultipliers(val)
-			total += val
-		}
+	for _, line := range data {
+		logrus.Debugf("line: [%s]", line)
+		matches = append(matches, matchMultipliers(line, doPattern)...)
+	}
+
+
+	logrus.Tracef("matches: [%s]", matches)
+	filtered := filterMultipliers(matches)
+	logrus.Tracef("filtered: [%s]", filtered)
+	for _, val := range filtered {
+		val := parseMultipliers(val)
+		total += val
 	}
 	return total
 }
@@ -51,30 +54,29 @@ func matchMultipliers(line string, expression string) []string {
 	return re.FindAllString(line, -1)
 }
 
-func filterMultipliers(multipliers []string) []string{
-  enabled := true
-  var result []string
+func filterMultipliers(multipliers []string) []string {
+	enabled := true
+	var result []string
 
-  for _, m := range multipliers{
+	for _, m := range multipliers {
 
-    if m == "don't()"{
-      enabled = false
-      logrus.Debug("disabled")
-      continue
-    }
-    if m == "do()"{
-      logrus.Debug("enabled")
-      enabled = true
-      continue
-    }
+		if m == "don't()" {
+			enabled = false
+			logrus.Debug("disabled")
+			continue
+		}
+		if m == "do()" {
+			logrus.Debug("enabled")
+			enabled = true
+			continue
+		}
 
-
-    if enabled{
-      logrus.Debugf("m:[%s], calc: [%d]", m, parseMultipliers(m))
-      result = append(result, m)
-    }
-  }
-  return result
+		if enabled {
+			logrus.Debugf("m:[%s], calc: [%d]", m, parseMultipliers(m))
+			result = append(result, m)
+		}
+	}
+	return result
 }
 
 func parseMultipliers(val string) int {
@@ -92,4 +94,3 @@ func parseMultipliers(val string) int {
 	return 0
 
 }
-
