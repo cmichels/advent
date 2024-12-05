@@ -1,8 +1,22 @@
 package main
 
-import "github.com/sirupsen/logrus"
+import (
+	"slices"
+
+	"github.com/sirupsen/logrus"
+)
 
 var xmas = []string{"X", "M", "A", "S"}
+
+type Pair struct {
+	x int
+	y int
+}
+
+var bottomLeft = Pair{x: -1, y: -1}
+var topRight = Pair{x: 1, y: 1}
+var topLeft = Pair{x: 1, y: -1}
+var bottomRight = Pair{x: -1, y: 1}
 
 const (
 	xIndex = 0
@@ -12,6 +26,52 @@ const (
 )
 
 func stepTwo(data [][]string) int {
+
+	findVal := xmas[aIndex]
+	total := 0
+
+	for y := 1; y < len(data)-1; y++ {
+		for x := 1; x < len(data[y])-1; x++ {
+			logrus.Tracef("(%d,%d)=%s", x, y, data[y][x])
+			if findVal == data[y][x] {
+				logrus.Debugf("finding xmas (%d,%d)",x,y)
+				if matches := isMasX(data, x, y); matches > 0 {
+					logrus.Debugf(" merry xmas - (%d,%d)=%d", x, y,matches)
+					total += matches
+				}
+			}
+		}
+
+	}
+	return total
+}
+
+func isMasX(data [][]string, x, y int) int {
+
+	tl := data[y + topLeft.y][x + topLeft.x]
+	tr := data[y + topRight.y][x + topRight.x]
+	bl := data[y + bottomLeft.y][x + bottomLeft.x]
+	br := data[y + bottomRight.y][x + bottomRight.x]
+
+	letters := []string{tl, tr, bl, br}
+  logrus.Debugf("  letters %+v", letters)
+	if slices.Contains(letters, "A") || slices.Contains(letters, "X"){
+		return 0
+	}
+
+	mas := map[string]int{"M": 0, "S": 0}
+	for _, l := range letters {
+		mas[l]++
+	}
+
+  logrus.Debugf("  mas %+v", mas)
+
+  if mas["M"] == 2 && mas["S"] == 2{
+    if tl != br && tr != bl{
+      return 1
+    }
+  }
+
 	return 0
 }
 
